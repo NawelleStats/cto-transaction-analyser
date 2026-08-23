@@ -12,6 +12,7 @@ from app.core.config import settings
 
 
 def _nettoyer_cours(serie: pd.Series) -> pd.Series:
+    """Convertit une série de cours au format Boursorama en nombres flottants."""
     return (
         serie.astype(str)
         .str.replace("€", "", regex=False)
@@ -23,6 +24,8 @@ def _nettoyer_cours(serie: pd.Series) -> pd.Series:
 
 
 def _categoriser(op: pd.Series) -> np.ndarray:
+    """Associe chaque libellé d'opération à une catégorie pour rassembler les opérations similaires.
+    Exemples : ACHAT COMPTANT et ACHAT ETRANGER COMPTANT."""
     op_upper = op.str.upper()
     return np.select(
         [
@@ -37,6 +40,17 @@ def _categoriser(op: pd.Series) -> np.ndarray:
 
 
 def charger_un_fichier(source: BinaryIO | str) -> pd.DataFrame:
+    """Charge et normalise un export CSV Boursorama.
+
+    Args:
+        source: Chemin du fichier ou flux binaire compatible avec pandas.
+
+    Returns:
+        DataFrame nettoyé avec dates converties, cours numériques et catégorie.
+
+    Raises:
+        ValueError: Si une colonne configurée est absente de l'export.
+    """
     df = pd.read_csv(source, sep=";", encoding="utf-8-sig")
     colonnes_attendues = settings.csv_required_columns
     manquantes = set(colonnes_attendues) - set(df.columns)
@@ -54,6 +68,14 @@ def charger_un_fichier(source: BinaryIO | str) -> pd.DataFrame:
 
 
 def charger_et_concatener(sources: Iterable[BinaryIO | str]) -> tuple[pd.DataFrame, int]:
+    """Charge plusieurs exports, les dédoublonne et les trie par date.
+
+    Args:
+        sources: Chemins ou flux correspondant aux exports à fusionner.
+
+    Returns:
+        Un tuple contenant le DataFrame final et le nombre de doublons retirés.
+    """
     dfs = [charger_un_fichier(source) for source in sources]
     df = pd.concat(dfs, ignore_index=True)
     n_avant = len(df)
@@ -63,6 +85,7 @@ def charger_et_concatener(sources: Iterable[BinaryIO | str]) -> tuple[pd.DataFra
 
 
 def extraire_transactions(df: pd.DataFrame) -> pd.DataFrame:
+    """Extrait les achats et ventes d'un DataFrame d'opérations."""
     return (
         df[df["Catégorie"].isin(["ACHAT", "VENTE"])]
         .sort_values("Date opération")
@@ -71,6 +94,16 @@ def extraire_transactions(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def apparier_fifo(df_transactions: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, list[str]]:
+    """Apparie les ventes avec les achats les plus anciens, titre par titre.
+
+    Args:
+        df_transactions: DataFrame contenant uniquement les achats et ventes,
+            idéalement trié chronologiquement.
+
+    Returns:
+        Les positions clôturées, les lots encore ouverts et les avertissements
+        concernant les ventes sans achat correspondant.
+    """
     files_achats: dict[str, deque] = {}
     positions_closes = []
     avertissements = []
@@ -138,6 +171,7 @@ def apparier_fifo(df_transactions: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataF
 
 
 def stats_par_titre(df_positions_closes: pd.DataFrame) -> pd.DataFrame:
+    """Calcule les statistiques agrégées des positions clôturées par titre."""
     if df_positions_closes.empty:
         return pd.DataFrame()
     stats = df_positions_closes.groupby("Valeur").agg(
@@ -153,6 +187,7 @@ def stats_par_titre(df_positions_closes: pd.DataFrame) -> pd.DataFrame:
 
 
 def calculer_tresorerie(df: pd.DataFrame) -> dict:
+    """Calcule les dépôts, retraits et coupons à partir des opérations."""
     virements = df[df["Catégorie"] == "VIREMENT"]
     coupons = df[df["Catégorie"] == "COUPON"]
     total_depots = virements.loc[virements["Montant"] > 0, "Montant"].sum()
@@ -175,4 +210,5 @@ def calculer_tresorerie(df: pd.DataFrame) -> dict:
 
 
 def lignes_non_categorisees(df: pd.DataFrame) -> pd.DataFrame:
+    """Retourne les opérations classées dans la catégorie ``AUTRE``."""
     return df[df["Catégorie"] == "AUTRE"]
