@@ -24,11 +24,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Stockage en mémoire des sessions d'analyse (clé = session_id).
-# Suffisant pour une V1 mono-utilisateur locale. À remplacer par un store
-# persistant (Redis, base de données) pour un usage multi-utilisateurs ou
-# si le process API redémarre souvent.
-
 app.include_router(api_router, tags=["api-v1"])
 
 @app.get("/api/health")

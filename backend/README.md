@@ -139,7 +139,6 @@ backend/
 └── README.md
 ```
 
-`core.py` a ete conserve comme facade de compatibilite pour les notebooks et scripts historiques ; la logique metier se trouve dans `app/services/transactions.py`.
 
 ## Limites connues
 

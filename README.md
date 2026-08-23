@@ -1,13 +1,13 @@
-# Analyse CTO Boursorama — Back (FastAPI) + Front (Streamlit)
+# Analyse CTO BoursoBank — Back (FastAPI) + Front (Streamlit)
 
-Analyse d'export(s) CSV "Historique des opérations" Boursorama (CTO) :
+Analyse d'export(s) CSV "Historique des opérations" BoursoBank (CTO) :
 appariement FIFO achats/ventes, statistiques de performance par titre,
 suivi de trésorerie (virements et coupons/dividendes).
 
 ## Structure
 
 ```
-boursorama-analyzer/
+BoursoBank-analyzer/
 ├── backend/
 │   ├── app/
 │   │   ├── core/config.py            # variables d'environnement et réglages
@@ -46,7 +46,7 @@ Deux process séparés, dans deux terminaux.
 
 ```bash
 cd backend
-uvicorn main:app --reload --port 8000
+uvicorn app.main:app --reload --port 8000
 ```
 
 L'API est alors disponible sur `http://localhost:8000` (doc interactive
@@ -68,7 +68,7 @@ BACKEND_URL=http://mon-serveur:8000 streamlit run app.py
 
 ## Utilisation
 
-1. Dans la barre latérale, importe un ou plusieurs fichiers CSV Boursorama
+1. Dans la barre latérale, importe un ou plusieurs fichiers CSV BoursoBank
    (un export par mois par exemple — les périodes qui se chevauchent sont
    automatiquement dédoublonnées).
 2. Clique sur **Analyser**.
@@ -82,7 +82,7 @@ BACKEND_URL=http://mon-serveur:8000 streamlit run app.py
 
 ## Format CSV attendu
 
-Export Boursorama, séparateur `;`, encodage UTF-8 (avec BOM), colonnes :
+Export BoursoBank, séparateur `;`, encodage UTF-8 (avec BOM), colonnes :
 `Date opération`, `Date valeur`, `Opération`, `Valeur`, `Code ISIN`, `Montant`,
 `Quantité`, `Cours`.
 
