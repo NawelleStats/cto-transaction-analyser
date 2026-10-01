@@ -1,5 +1,10 @@
 ## v0.0.0
 
+#### 01-10-2026
+
+- Gestion des variables avec fichier .env
+- Gestion des librairies avec uv
+
 ### Premières versions avec premières idées
 
 Objectif :

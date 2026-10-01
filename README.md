@@ -20,22 +20,29 @@ BoursoBank-analyzer/
 │   └── test_transactions.py # tests unitaires des services
 ├── requirements.txt
 ├── requirements-dev.txt
+├── pyproject.toml
+├── uv.lock
 └── README.md
 ```
 
 ## Installation
 
+Installer `uv` si nécessaire, puis synchroniser l'environnement depuis la racine :
+
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
+
+Cette commande crée l'environnement virtuel `.venv` et installe les dépendances
+de l'application et de développement. Le fichier `uv.lock` verrouille les
+versions résolues.
 
 Copier `.env.example` vers `.env` et adapter les valeurs si nécessaire.
 
 Pour installer les dépendances de développement et lancer les tests :
 
 ```bash
-pip install -r requirements-dev.txt
-python -m pytest tests -q
+uv run pytest tests -q
 ```
 
 ## Lancement
@@ -45,8 +52,7 @@ Deux process séparés, dans deux terminaux.
 **1. Backend (API)**
 
 ```bash
-cd backend
-uvicorn app.main:app --reload --port 8000
+uv run uvicorn app.main:app --app-dir backend --reload --port 8000
 ```
 
 L'API est alors disponible sur `http://localhost:8000` (doc interactive
@@ -55,15 +61,14 @@ auto-générée sur `http://localhost:8000/docs`).
 **2. Frontend (Streamlit)**
 
 ```bash
-cd frontend
-streamlit run app.py
+uv run streamlit run frontend_streamlit/app.py
 ```
 
 Par défaut le front cherche le backend sur `http://localhost:8000`. Pour
 pointer ailleurs (autre machine, autre port) :
 
 ```bash
-BACKEND_URL=http://mon-serveur:8000 streamlit run app.py
+BACKEND_URL=http://mon-serveur:8000 uv run streamlit run frontend_streamlit/app.py
 ```
 
 ## Utilisation
