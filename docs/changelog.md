@@ -4,6 +4,7 @@
 
 - Gestion des variables avec fichier .env
 - Gestion des librairies avec uv
+- Modularisation du code front streamlit
 
 ### Premières versions avec premières idées
 

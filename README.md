@@ -13,11 +13,11 @@ BoursoBank-analyzer/
 │   │   ├── core/config.py            # variables d'environnement et réglages
 │   │   ├── models/session.py         # modèle des sessions d'analyse
 │   │   └── services/transactions.py  # parsing, FIFO, stats, trésorerie
-│   └── main.py     # API FastAPI
+│   ├── main.py     # API FastAPI
+│   └── tests/
+│       └── test_transactions.py
 ├── frontend_streamlit/               # streamlit dans un premier temps
 │   └── app.py      # interface Streamlit qui consomme l'API
-├── tests/
-│   └── test_transactions.py # tests unitaires des services
 ├── requirements.txt
 ├── requirements-dev.txt
 ├── pyproject.toml
@@ -42,7 +42,7 @@ Copier `.env.example` vers `.env` et adapter les valeurs si nécessaire.
 Pour installer les dépendances de développement et lancer les tests :
 
 ```bash
-uv run pytest tests -q
+uv run pytest -q
 ```
 
 ## Lancement

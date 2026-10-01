@@ -17,13 +17,13 @@ L'API prend en charge :
 Depuis la racine du projet :
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
-Pour installer aussi les outils de test :
+Pour lancer les tests depuis la racine :
 
 ```bash
-pip install -r requirements-dev.txt
+uv run pytest -q
 ```
 
 ## Configuration
@@ -48,8 +48,7 @@ Un modele de configuration est disponible dans `.env.example` a la racine du pro
 Depuis la racine du projet :
 
 ```bash
-cd backend
-uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+uv run uvicorn app.main:app --app-dir backend --reload --host 127.0.0.1 --port 8000
 ```
 
 L'API est alors disponible a l'adresse `http://localhost:8000`.
@@ -122,8 +121,7 @@ Les tests unitaires couvrent les services de parsing, categorisation, dedoublonn
 Depuis la racine du projet :
 
 ```bash
-cd backend
-python -m pytest tests -q
+uv run pytest -q
 ```
 
 ## Organisation du code
