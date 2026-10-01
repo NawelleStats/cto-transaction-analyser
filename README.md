@@ -18,8 +18,6 @@ BoursoBank-analyzer/
 │       └── test_transactions.py
 ├── frontend_streamlit/               # streamlit dans un premier temps
 │   └── app.py      # interface Streamlit qui consomme l'API
-├── requirements.txt
-├── requirements-dev.txt
 ├── pyproject.toml
 ├── uv.lock
 └── README.md
