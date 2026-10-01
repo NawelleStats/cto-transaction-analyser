@@ -17,3 +17,7 @@ dependencies = [
 
 [dependency-groups]
 dev = ["pytest>=7.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+pythonpath = ["backend"]
