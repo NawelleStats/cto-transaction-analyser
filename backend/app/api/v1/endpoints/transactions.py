@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import List
 
 import pandas as pd
+import requests
 
 from app.services.transactions import (
     collecter_exports_telechargements,
@@ -169,7 +170,7 @@ def get_graphique(session_id: str, titre: str):
     }
 
 @router.get("/api/sessions/{session_id}/isin-vers-ticker/{isin}")
-def resolve_isin(isin: str):
+def resolve_isin(session_id: str, isin: str):
     url = "https://query2.finance.yahoo.com/v1/finance/search"
     headers = {"User-Agent": "Mozilla/5.0"}
     params = {"q": isin, "quotesCount": 1, "newsCount": 0}

@@ -4,6 +4,10 @@
 
 - Ajout d'un bouton Streamlit pour collecter les exports `export-operations-*.csv` du dossier Téléchargements du backend.
 - Les fichiers collectés sont déplacés vers le dossier configuré par `TRANSACTIONS_DATA_DIR` (par défaut `FINANCE/data/data_transaction`).
+- Dans le détail d'un titre, affichage du total des gains/pertes réalisés et du dernier cours connu via Yahoo Finance.
+- Ajout d'un repère indicatif comparant le cours au PRU des positions ouvertes, ou au PRU historique lorsqu'il ne reste plus de titres.
+
+TODO : réparer la requête pour récupérer le dernier cours.
 
 #### 01-10-2026
 
