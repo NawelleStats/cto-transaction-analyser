@@ -9,6 +9,36 @@ def render_import_panel(backend_url: str) -> None:
             "Tu peux importer plusieurs exports CSV (un par mois par exemple) : "
             "ils seront concaténés et les lignes en double automatiquement retirées."
         )
+        if st.button(
+            "Récupérer les exports récents de Téléchargements",
+            use_container_width=True,
+        ):
+            with st.spinner("Recherche des exports sur le backend..."):
+                try:
+                    response = requests.post(
+                        f"{backend_url}/api/imports/telechargements", timeout=30
+                    )
+                except requests.exceptions.RequestException as error:
+                    st.error(
+                        f"Impossible de contacter le backend ({backend_url}). "
+                        f"Est-il démarré ?\n\n{error}"
+                    )
+                    st.stop()
+
+            if response.status_code != 200:
+                st.error(
+                    f"Erreur : {response.json().get('detail', response.text)}"
+                )
+            else:
+                data = response.json()
+                if data["nb_fichiers"]:
+                    st.success(
+                        f"{data['nb_fichiers']} fichier(s) déplacé(s) dans "
+                        f"{data['destination']} : {', '.join(data['fichiers'])}"
+                    )
+                else:
+                    st.info("Aucun export-operations-*.csv trouvé dans Téléchargements.")
+
         files = st.file_uploader(
             "Export(s) CSV Boursorama",
             type="csv",

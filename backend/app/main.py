@@ -6,8 +6,6 @@ Lancer en local :
 
 from __future__ import annotations
 
-
-import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 

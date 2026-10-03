@@ -1,5 +1,10 @@
 ## v0.0.0
 
+#### 03-10-2026
+
+- Ajout d'un bouton Streamlit pour collecter les exports `export-operations-*.csv` du dossier Téléchargements du backend.
+- Les fichiers collectés sont déplacés vers le dossier configuré par `TRANSACTIONS_DATA_DIR` (par défaut `FINANCE/data/data_transaction`).
+
 #### 01-10-2026
 
 - Gestion des variables avec fichier .env

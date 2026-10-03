@@ -1,12 +1,14 @@
 from io import StringIO
+from pathlib import Path
 
 import pandas as pd
 import pytest
 
-from app.core.config import Settings
+from app.core.config import BASE_DIR, Settings
 from app.services.transactions import (
     apparier_fifo,
     calculer_tresorerie,
+    collecter_exports_telechargements,
     charger_et_concatener,
     charger_un_fichier,
     extraire_transactions,
@@ -139,6 +141,36 @@ def test_settings_parse_configured_csv_columns():
     )
 
     assert settings.csv_required_columns[-1] == "Compte"
+
+
+def test_settings_resolves_relative_transactions_data_dir_from_project_root():
+    settings = Settings(TRANSACTIONS_DATA_DIR="../data/data_transaction")
+
+    assert settings.transactions_data_dir == BASE_DIR.parent / "data" / "data_transaction"
+
+
+def test_collecter_exports_telechargements_moves_matching_csv_in_latest_first_order(
+    tmp_path: Path,
+):
+    downloads = tmp_path / "Downloads"
+    destination = tmp_path / "data_transaction"
+    downloads.mkdir()
+    older = downloads / "export-operations-2026-01.csv"
+    newer = downloads / "export-operations-2026-02.csv"
+    ignored = downloads / "other.csv"
+    older.write_text("older", encoding="utf-8")
+    newer.write_text("newer", encoding="utf-8")
+    ignored.write_text("ignored", encoding="utf-8")
+    older.touch()
+    newer.touch()
+
+    moved = collecter_exports_telechargements(downloads, destination)
+
+    assert [path.name for path in moved] == [newer.name, older.name]
+    assert (destination / newer.name).read_text(encoding="utf-8") == "newer"
+    assert not older.exists()
+    assert not newer.exists()
+    assert not (destination / ignored.name).exists()
 
 
 def test_settings_reject_incomplete_csv_columns():

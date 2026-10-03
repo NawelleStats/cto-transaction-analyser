@@ -3,12 +3,41 @@
 from __future__ import annotations
 
 from collections import deque
+from pathlib import Path
+import shutil
 from typing import BinaryIO, Iterable
 
 import numpy as np
 import pandas as pd
 
 from app.core.config import settings
+
+
+def collecter_exports_telechargements(
+    downloads_dir: Path, destination_dir: Path
+) -> list[Path]:
+    """Déplace les exports CSV BoursoBank depuis le dossier Téléchargements."""
+    if not downloads_dir.is_dir():
+        return []
+
+    fichiers = sorted(
+        (
+            path
+            for path in downloads_dir.iterdir()
+            if path.is_file()
+            and path.name.startswith("export-operations-")
+            and path.suffix.lower() == ".csv"
+        ),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+    if not fichiers:
+        return []
+
+    destination_dir.mkdir(parents=True, exist_ok=True)
+    for fichier in fichiers:
+        shutil.move(str(fichier), destination_dir / fichier.name)
+    return [destination_dir / fichier.name for fichier in fichiers]
 
 
 def _nettoyer_cours(serie: pd.Series) -> pd.Series:

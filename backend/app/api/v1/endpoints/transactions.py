@@ -1,11 +1,13 @@
 from fastapi import APIRouter, HTTPException, File, UploadFile
 import io
 import uuid
+from pathlib import Path
 from typing import List
 
 import pandas as pd
 
 from app.services.transactions import (
+    collecter_exports_telechargements,
     charger_et_concatener,
     extraire_transactions,
     apparier_fifo,
@@ -14,6 +16,7 @@ from app.services.transactions import (
     lignes_non_categorisees,
 )           
 from app.core.session_store import SESSIONS
+from app.core.config import settings
 from app.models.session import AnalysisSession
 
 router = APIRouter()
@@ -37,6 +40,25 @@ def _get_session(session_id: str) -> AnalysisSession:
             detail="Session introuvable ou expirée. Ré-importe tes fichiers.",
         )
     return session
+
+
+@router.post("/api/imports/telechargements")
+def collecter_telechargements():
+    try:
+        fichiers = collecter_exports_telechargements(
+            Path.home() / "Downloads", settings.transactions_data_dir
+        )
+    except OSError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Impossible de copier les exports téléchargés : {exc}",
+        ) from exc
+
+    return {
+        "nb_fichiers": len(fichiers),
+        "fichiers": [fichier.name for fichier in fichiers],
+        "destination": str(settings.transactions_data_dir),
+    }
 
 
 @router.post("/api/sessions")

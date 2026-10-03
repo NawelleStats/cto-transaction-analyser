@@ -30,6 +30,12 @@ class Settings(BaseSettings):
     BACKEND_HOST: str = "127.0.0.1"
     BACKEND_PORT: int = 8000
     CSV_REQUIRED_COLUMNS: str = ",".join(DEFAULT_CSV_COLUMNS)
+    TRANSACTIONS_DATA_DIR: Path = BASE_DIR.parent / "data" / "data_transaction"
+
+    @property
+    def transactions_data_dir(self) -> Path:
+        path = self.TRANSACTIONS_DATA_DIR.expanduser()
+        return (path if path.is_absolute() else BASE_DIR / path).resolve()
 
     @property
     def csv_required_columns(self) -> list[str]:

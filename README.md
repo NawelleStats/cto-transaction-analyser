@@ -35,7 +35,7 @@ Cette commande crée l'environnement virtuel `.venv` et installe les dépendance
 de l'application et de développement. Le fichier `uv.lock` verrouille les
 versions résolues.
 
-Copier `.env.example` vers `.env` et adapter les valeurs si nécessaire.
+Copier `backend/.env.example` vers `backend/.env` et adapter les valeurs si nécessaire.
 
 Pour installer les dépendances de développement et lancer les tests :
 
@@ -61,6 +61,11 @@ auto-générée sur `http://localhost:8000/docs`).
 ```bash
 uv run streamlit run frontend_streamlit/app.py
 ```
+
+Dans la barre latérale, le bouton de récupération déplace les fichiers
+`export-operations-*.csv` du dossier `Téléchargements` de la machine qui exécute
+le backend vers le dossier défini par `TRANSACTIONS_DATA_DIR` (par défaut
+`../data/data_transaction`, relatif à la racine du projet).
 
 Par défaut le front cherche le backend sur `http://localhost:8000`. Pour
 pointer ailleurs (autre machine, autre port) :
